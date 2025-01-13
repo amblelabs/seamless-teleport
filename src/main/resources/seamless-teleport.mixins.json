@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.pavatus.stp.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "EntityInvoker",
+    "ServerPlayerEntityInvoker",
+    "ThreadedAnvilChunkStorageAccessor"
+  ],
+  "client": [
+    "client.ClientPlayNetworkHandlerAccessor",
+    "client.ClientWorldInvoker",
+    "client.MinecraftClientMixin",
+    "client.WorldRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
