@@ -1,4 +1,4 @@
-package dev.pavatus.stp;
+package dev.pavatus.stp.core.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

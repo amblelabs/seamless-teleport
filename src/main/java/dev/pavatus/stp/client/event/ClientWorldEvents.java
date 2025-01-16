@@ -1,4 +1,4 @@
-package dev.pavatus.stp.client;
+package dev.pavatus.stp.client.event;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

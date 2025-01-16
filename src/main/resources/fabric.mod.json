@@ -19,7 +19,7 @@
       "dev.pavatus.stp.client.STPModClient"
     ],
     "main": [
-      "dev.pavatus.stp.STPMod"
+      "dev.pavatus.stp.core.STPMod"
     ]
   },
   "mixins": [
