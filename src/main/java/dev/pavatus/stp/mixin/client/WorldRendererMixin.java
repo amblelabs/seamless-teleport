@@ -102,7 +102,7 @@ public abstract class WorldRendererMixin implements STPWorldRenderer {
         this.world = world;
         this.reload();
 
-        Camera camera = this.client.gameRenderer.getCamera();
+        /*Camera camera = this.client.gameRenderer.getCamera();
 
         double d = this.client.player.getX();
         double e = this.client.player.getY();
@@ -137,7 +137,6 @@ public abstract class WorldRendererMixin implements STPWorldRenderer {
         this.chunkInfos.clear();
         this.chunkInfos.addAll(renderableChunks.chunks);
 
-
-        this.updateChunks(camera);
+        this.updateChunks(camera);*/
     }
 }

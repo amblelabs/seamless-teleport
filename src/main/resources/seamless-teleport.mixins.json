@@ -4,12 +4,18 @@
   "package": "dev.pavatus.stp.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "EntityInvoker",
+    "v2.EntityInvoker",
     "ServerPlayerEntityInvoker",
-    "ThreadedAnvilChunkStorageAccessor"
+    "ThreadedAnvilChunkStorageAccessor",
+    "ThreadedAnvilChunkStorageMixin",
+    "WorldChunkMixin",
+    "v2.ServerEntityHandlerMixin",
+    "v2.ServerEntityManagerListenerMixin",
+    "v2.ServerPlayerEntityMixin"
   ],
   "client": [
     "client.ClientPlayNetworkHandlerAccessor",
+    "client.ClientPlayNetworkHandlerMixin",
     "client.ClientWorldInvoker",
     "client.MinecraftClientMixin",
     "client.WorldRendererMixin"
