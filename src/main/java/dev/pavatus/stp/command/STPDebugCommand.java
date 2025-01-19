@@ -1,4 +1,4 @@
-package dev.pavatus.stp.core.command;
+package dev.pavatus.stp.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;

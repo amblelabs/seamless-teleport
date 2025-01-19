@@ -4,9 +4,12 @@
   "package": "dev.pavatus.stp.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "world_indexing.ServerWorldMixin",
     "event.ThreadedAnvilChunkStorageMixin"
   ],
   "client": [
+    "world_indexing.ClientPlayNetworkHandlerMixin",
+    "world_indexing.MinecraftClientMixin",
     "event.client.MinecraftClientMixin"
   ],
   "injectors": {

@@ -1,6 +1,6 @@
 package dev.pavatus.stp.mixin.event;
 
-import dev.pavatus.stp.core.event.ChunkSyncEvents;
+import dev.pavatus.stp.event.ChunkSyncEvents;
 import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
