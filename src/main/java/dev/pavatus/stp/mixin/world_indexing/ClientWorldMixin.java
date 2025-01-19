@@ -5,6 +5,7 @@ import dev.pavatus.stp.client.ghost.GhostClientPlayerEntity;
 import dev.pavatus.stp.client.indexing.SClientWorld;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.*;
 
@@ -63,12 +64,15 @@ public class ClientWorldMixin implements SClientWorld {
         this.ghostPlayer = GhostClientPlayerEntity.create(
                 (ClientWorld) (Object) this, networkHandler, client.player);
 
-        //this.ghostClient.player = this.ghostPlayer;
-
         if (this.isMain()) {
             this.stp$setMain();
         } else {
             this.stp$unsetMain();
         }
+    }
+
+    @Override
+    public ClientPlayerEntity stp$player() {
+        return ghostPlayer;
     }
 }
