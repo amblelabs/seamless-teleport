@@ -21,10 +21,10 @@ import java.util.List;
 public class MinecraftClientMixin implements SMinecraftClient {
 
     @Unique private final Object2IntMap<RegistryKey<World>> keyToWorldIndex = new Object2IntOpenHashMap<>();
-    @Unique private final List<SClientWorld> worlds = new ArrayList<>();
+    @Unique private final List<ClientWorld> worlds = new ArrayList<>();
 
     @Override
-    public List<SClientWorld> stp$worlds() {
+    public List<ClientWorld> stp$worlds() {
         return worlds;
     }
 
@@ -37,12 +37,20 @@ public class MinecraftClientMixin implements SMinecraftClient {
     public void stp$setWorldIndex(RegistryKey<World> key, int index) {
         keyToWorldIndex.put(key, index);
 
+        if (index >= worlds.size())
+            worlds.add(null);
+
         System.out.println("Received worlds: " + key + ": " + index);
     }
 
     @Inject(method = "joinWorld", at = @At("HEAD"))
     public void joinWorld(ClientWorld world, CallbackInfo ci) {
-        if (world instanceof SClientWorld sworld)
-            this.worlds.add(sworld);
+        if (!(world instanceof SClientWorld sworld))
+            return;
+
+        int index = this.stp$getWorldIndex(world.getRegistryKey());
+        sworld.stp$setIndex(index);
+
+        this.worlds.set(index, world);
     }
 }

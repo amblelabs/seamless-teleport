@@ -5,6 +5,7 @@ import dev.pavatus.stp.event.ChunkSyncEvents;
 import dev.pavatus.stp.indexing.ServerWorldIndexer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;

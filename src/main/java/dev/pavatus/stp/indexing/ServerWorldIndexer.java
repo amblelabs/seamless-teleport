@@ -39,9 +39,12 @@ public class ServerWorldIndexer {
             }
         });
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            syncToPlayer(server, handler.getPlayer());
-        });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server)
+                -> syncToPlayer(server, handler.getPlayer()));
+    }
+
+    public static int getWorldIndex(ServerWorld world) {
+        return ((SServerWorld) world).stp$index();
     }
 
     private static void syncToPlayer(MinecraftServer server, ServerPlayerEntity player) {
