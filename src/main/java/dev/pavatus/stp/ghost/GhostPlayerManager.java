@@ -20,9 +20,16 @@ public class GhostPlayerManager {
     }
 
     public static void sendPlayPacket(GhostServerPlayerEntity player, Packet<?> packet, PacketCallbacks callbacks) {
+        int packetId = NetworkState.PLAY.getPacketId(NetworkSide.CLIENTBOUND, packet);
+
+        if (packetId == -1) {
+            STPMod.LOGGER.error("Failed to serialize an unregistered packet {}", packet);
+            return;
+        }
+
         PacketByteBuf buf = PacketByteBufs.create();
 
-        buf.writeVarInt(NetworkState.PLAY.getPacketId(NetworkSide.CLIENTBOUND, packet));
+        buf.writeVarInt(packetId);
         packet.write(buf);
 
         buf.writeInt(0xCAFEBABE);

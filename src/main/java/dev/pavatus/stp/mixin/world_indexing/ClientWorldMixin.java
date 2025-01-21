@@ -12,14 +12,12 @@ import org.spongepowered.asm.mixin.*;
 @Mixin(ClientWorld.class)
 public class ClientWorldMixin implements SClientWorld {
 
-    @Mutable
     @Shadow @Final private MinecraftClient client;
 
     @Unique private int index;
+    @Unique private boolean init;
 
-    @Unique
-    private GhostClientPlayerEntity ghostPlayer;
-
+    @Unique private GhostClientPlayerEntity ghostPlayer;
     @Unique private GhostClientPlayNetworkHandler networkHandler;
 
     @Override
@@ -53,10 +51,10 @@ public class ClientWorldMixin implements SClientWorld {
 
     @Override
     public void stp$init() {
-        if (this.client != null)
+        if (this.init)
             return;
 
-        this.client = MinecraftClient.getInstance();
+        this.init = true;
 
         this.networkHandler = GhostClientPlayNetworkHandler.create(
                 client.player);

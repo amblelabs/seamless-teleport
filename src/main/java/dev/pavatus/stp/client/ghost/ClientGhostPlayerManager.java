@@ -30,9 +30,6 @@ public class ClientGhostPlayerManager {
             if (magic != 0xCAFEBABE)
                 return;
 
-
-            System.out.println("Received remote packet: " + packet.getClass());
-
             int worldIndex = buf.readVarInt();
             SClientWorld sworld = (SClientWorld) ClientWorldIndexer.getWorld(worldIndex);
 
@@ -64,7 +61,7 @@ public class ClientGhostPlayerManager {
                 }
             });
 
-            throw OffThreadException.INSTANCE;
+            return;
         }
 
         runnable.run();
