@@ -1,11 +1,10 @@
 package dev.pavatus.stp;
 
 import dev.pavatus.stp.command.STPDebugCommand;
-import dev.pavatus.stp.event.ChunkSyncEvents;
 import dev.pavatus.stp.indexing.ServerWorldIndexer;
+import dev.pavatus.stp.interworld.InterWorldPacketHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -44,12 +43,6 @@ public class STPMod implements ModInitializer {
             STPDebugCommand.register(dispatcher);
         });
 
-        ChunkSyncEvents.SYNC.register((world, player, chunk) -> {
-
-        });
-
-        ChunkSyncEvents.DESYNC.register((world, player, chunk) -> {
-
-        });
+        InterWorldPacketHandler.init();
     }
 }

@@ -1,8 +1,8 @@
-package dev.pavatus.stp.client.ghost;
+package dev.pavatus.stp.client.interworld;
 
 import dev.pavatus.stp.client.indexing.ClientWorldIndexer;
 import dev.pavatus.stp.client.indexing.SClientWorld;
-import dev.pavatus.stp.ghost.GhostPlayerManager;
+import dev.pavatus.stp.interworld.InterWorldPacketHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -15,18 +15,18 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.util.thread.ThreadExecutor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class ClientGhostPlayerManager {
+public class ClientInterWorldPacketHandler {
+
 
     public static void init() {
-        ClientPlayNetworking.registerGlobalReceiver(GhostPlayerManager.PLAY_PACKET, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.PLAY_PACKET, (client, handler, buf, responseSender) -> {
             Packet<ClientPlayNetworkHandler> packet = readPacket(buf);
             handlePacket(client, buf, packet::apply);
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(GhostPlayerManager.PLAY_BUNDLE_PACKET, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.PLAY_BUNDLE_PACKET, (client, handler, buf, responseSender) -> {
             int size = buf.readVarInt();
             Packet<ClientPlayNetworkHandler>[] packets = new Packet[size];
 
@@ -52,8 +52,10 @@ public class ClientGhostPlayerManager {
 
         // in theory, this should abuse mc's singlethreaded composure
         runOnThread(() -> {
-            ClientWorld realWorld = client.world;
-            ClientPlayerEntity realPlayer = client.player;
+            SMinecraftClient interClient = (SMinecraftClient) client;
+
+            ClientWorld realWorld = interClient.stp$world();
+            ClientPlayerEntity realPlayer = interClient.stp$player();
 
             client.world = (ClientWorld) sworld;
             client.player = sworld.stp$player();

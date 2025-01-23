@@ -1,23 +1,25 @@
-package dev.pavatus.stp.ghost;
+package dev.pavatus.stp.interworld;
 
 import dev.pavatus.stp.STPMod;
 import dev.pavatus.stp.indexing.ServerWorldIndexer;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.*;
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.NetworkState;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GhostPlayerManager {
+public class InterWorldPacketHandler {
 
     public static final Identifier PLAY_PACKET = new Identifier(STPMod.MOD_ID, "play_packet");
     public static final Identifier PLAY_BUNDLE_PACKET = new Identifier(STPMod.MOD_ID, "play_bundle_packet");
@@ -26,7 +28,11 @@ public class GhostPlayerManager {
 
     }
 
-    public static void sendPlayPacket(GhostServerPlayerEntity player, Packet<?> packet, PacketCallbacks callbacks) {
+    public static boolean shouldProcessPacket(Packet<?> packet) {
+        return !(packet instanceof CustomPayloadS2CPacket);
+    }
+
+    public static void sendPlayPacket(ServerPlayerEntity player, Packet<?> packet, PacketCallbacks callbacks) {
         if (packet instanceof BundleS2CPacket bundle) {
             sendBundlePacket(player, bundle, callbacks);
             return;
@@ -36,7 +42,7 @@ public class GhostPlayerManager {
                 buf -> writePacket(packet, buf));
     }
 
-    private static void sendBundlePacket(GhostServerPlayerEntity player, BundleS2CPacket bundle, PacketCallbacks callbacks) {
+    private static void sendBundlePacket(ServerPlayerEntity player, BundleS2CPacket bundle, PacketCallbacks callbacks) {
         handlePacket(player, callbacks, buf -> {
             List<Packet<ClientPlayPacketListener>> packets = (List<Packet<ClientPlayPacketListener>>) bundle.getPackets();
 
@@ -74,14 +80,5 @@ public class GhostPlayerManager {
 
         buf.writeVarInt(packetId);
         packet.write(buf);
-    }
-
-    public static GhostServerPlayerEntity create(ServerPlayerEntity player, ServerWorld targetWorld, BlockPos pos) {
-        GhostServerPlayerEntity ghost = new GhostServerPlayerEntity(player, targetWorld, pos);
-
-        targetWorld.getPlayers().add(ghost);
-        targetWorld.spawnEntity(ghost);
-
-        return ghost;
     }
 }

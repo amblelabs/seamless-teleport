@@ -30,6 +30,7 @@ public class ClientWorldMixin implements SClientWorld {
         return index;
     }
 
+    @Unique
     private boolean isMain() {
         return (Object) this == MinecraftClient.getInstance().world;
     }
@@ -37,6 +38,11 @@ public class ClientWorldMixin implements SClientWorld {
     @Override
     public ClientPlayNetworkHandler stp$networkHandler() {
         return this.isMain() ? this.client.getNetworkHandler() : this.networkHandler;
+    }
+
+    @Override
+    public ClientPlayerEntity stp$player() {
+        return ghostPlayer;
     }
 
     @Override
@@ -67,10 +73,5 @@ public class ClientWorldMixin implements SClientWorld {
         } else {
             this.stp$unsetMain();
         }
-    }
-
-    @Override
-    public ClientPlayerEntity stp$player() {
-        return ghostPlayer;
     }
 }
