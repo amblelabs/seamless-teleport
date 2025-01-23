@@ -4,6 +4,7 @@
   "package": "dev.pavatus.stp.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "api.EntityTrackerEntryMixin",
     "event.ThreadedAnvilChunkStorageMixin",
     "ghost.NetworkStateMixin",
     "ghost.ServerPlayNetworkHandlerAccessor",

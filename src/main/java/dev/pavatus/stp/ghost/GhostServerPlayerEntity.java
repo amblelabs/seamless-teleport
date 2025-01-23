@@ -1,25 +1,30 @@
 package dev.pavatus.stp.ghost;
 
+import com.mojang.authlib.GameProfile;
+import dev.pavatus.stp.api.DoNotSyncMe;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.UUID;
 
-public class GhostServerPlayerEntity extends ServerPlayerEntity {
+public class GhostServerPlayerEntity extends ServerPlayerEntity implements DoNotSyncMe {
 
     private final ServerPlayerEntity owner;
 
     public GhostServerPlayerEntity(ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
-        super(player.server, world, player.getGameProfile());
+        super(player.server, world, randomProfile());
 
         this.owner = player;
         this.networkHandler = GhostServerPlayNetworkHandler.create(this);
 
         this.setPos(pos.getX(), pos.getY(), pos.getZ());
-        this.setUuid(UUID.randomUUID());
+    }
+
+    private static GameProfile randomProfile() {
+        UUID id = UUID.randomUUID();
+        return new GameProfile(id, id.toString());
     }
 
     public ServerPlayerEntity getOwner() {
