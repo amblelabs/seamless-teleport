@@ -63,8 +63,8 @@ public class InterWorldPacketHandler {
         player.networkHandler.sendPacket(ServerPlayNetworking.createS2CPacket(PLAY_PACKET, buf), callbacks);
     }
 
-    private static void writeWorld(ServerWorld world, PacketByteBuf buf) {
-        buf.writeInt(0xCAFEBABE);
+    public static void writeWorld(ServerWorld world, PacketByteBuf buf) {
+        //buf.writeInt(0xCAFEBABE);
 
         int index = ServerWorldIndexer.getWorldIndex(world);
         buf.writeVarInt(index);

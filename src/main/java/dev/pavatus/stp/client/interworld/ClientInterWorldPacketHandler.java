@@ -88,10 +88,10 @@ public class ClientInterWorldPacketHandler {
         if (buf.readableBytes() < 4)
             return -1;
 
-        int magic = buf.readInt();
+        //int magic = buf.readInt();
 
-        if (magic != 0xCAFEBABE)
-            return -1;
+        //if (magic != 0xCAFEBABE)
+        //    return -1;
 
         return buf.readVarInt();
     }
