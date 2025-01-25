@@ -14,6 +14,7 @@
   "client": [
     "event.client.ClientPlayerEntityMixin",
     "event.client.MinecraftClientMixin",
+    "ghost.ClientChunkManagerMixin",
     "interworld.ClientPlayNetworkHandlerAccessor",
     "interworld.ClientPlayNetworkHandlerMixin",
     "interworld.MinecraftClientMixin",
