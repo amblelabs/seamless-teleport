@@ -2,6 +2,7 @@ package dev.pavatus.stp.mixin.world_indexing;
 
 import dev.pavatus.stp.client.indexing.SClientWorld;
 import dev.pavatus.stp.client.indexing.SMinecraftClient;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -40,7 +41,7 @@ public class MinecraftClientMixin implements SMinecraftClient {
         if (index >= worlds.size())
             worlds.add(null);
 
-        System.out.println("Received worlds: " + key + ": " + index);
+        System.out.println("Received world: " + key + ": " + index);
     }
 
     @Inject(method = "joinWorld", at = @At("HEAD"))

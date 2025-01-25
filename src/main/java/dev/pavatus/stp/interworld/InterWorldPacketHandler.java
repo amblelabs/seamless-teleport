@@ -3,6 +3,7 @@ package dev.pavatus.stp.interworld;
 import dev.pavatus.stp.STPMod;
 import dev.pavatus.stp.ghost.GhostServerPlayerEntity;
 import dev.pavatus.stp.ghost.SServerPlayerEntity;
+import dev.pavatus.stp.indexing.SServerWorld;
 import dev.pavatus.stp.indexing.ServerWorldIndexer;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -31,6 +32,7 @@ public class InterWorldPacketHandler {
 
     public static final Identifier PLAY_PACKET = new Identifier(STPMod.MOD_ID, "play_packet");
     public static final Identifier PLAY_BUNDLE_PACKET = new Identifier(STPMod.MOD_ID, "play_bundle_packet");
+    public static final Identifier LOAD_PACKET = new Identifier(STPMod.MOD_ID, "load");
 
     public static void init() {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -109,5 +111,19 @@ public class InterWorldPacketHandler {
 
         ((SServerPlayerEntity) player).stp$ghosts().add(ghost);
         return ghost;
+    }
+
+    public static void loadWorld(ServerPlayerEntity player, ServerWorld world) {
+        PacketByteBuf buf = PacketByteBufs.create();
+
+        // TODO: implement index -> registry key for indexing
+        buf.writeVarInt(((SServerWorld) world).stp$index());
+        buf.writeRegistryKey(world.getRegistryKey());
+        buf.writeRegistryKey(world.getDimensionKey());
+        buf.writeLong(world.getSeed());
+        buf.writeBoolean(world.isDebugWorld());
+        buf.writeBoolean(world.isFlat());
+
+        ServerPlayNetworking.send(player, LOAD_PACKET, buf);
     }
 }
