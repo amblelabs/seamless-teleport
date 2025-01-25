@@ -70,13 +70,13 @@ public class ClientInterWorldPacketHandler {
             ClientWorld realWorld = interClient.stp$world();
             ClientPlayerEntity realPlayer = interClient.stp$player();
 
-            //client.world = (ClientWorld) sworld;
-            //client.player = sworld.stp$player();
+            client.world = (ClientWorld) sworld;
+            client.player = sworld.stp$player();
 
             consumer.accept(networkHandler);
 
-            //client.world = realWorld;
-            //client.player = realPlayer;
+            client.world = realWorld;
+            client.player = realPlayer;
         }, sworld.stp$networkHandler(), client);
     }
 
