@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.pavatus.stp.interworld.InterWorldPacketHandler;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -30,7 +31,7 @@ public class STPDebugCommand {
         ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
 
         ctx.getSource().getServer().executeSync(() -> {
-
+            InterWorldPacketHandler.createPacketWatcher(player, world, pos);
         });
 
         return Command.SINGLE_SUCCESS;

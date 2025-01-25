@@ -7,5 +7,11 @@ public interface SMinecraftClient {
     ClientPlayerEntity stp$player();
     ClientWorld stp$world();
 
-    void stp$update();
+    default void stp$update() {
+        this.stp$updatePlayer();
+        this.stp$updateWorld();
+    }
+
+    void stp$updatePlayer();
+    void stp$updateWorld();
 }

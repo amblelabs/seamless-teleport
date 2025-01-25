@@ -1,9 +1,13 @@
 package dev.pavatus.stp.interworld;
 
 import dev.pavatus.stp.STPMod;
+import dev.pavatus.stp.ghost.GhostServerPlayerEntity;
+import dev.pavatus.stp.ghost.SServerPlayerEntity;
 import dev.pavatus.stp.indexing.ServerWorldIndexer;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
@@ -12,10 +16,14 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -25,7 +33,16 @@ public class InterWorldPacketHandler {
     public static final Identifier PLAY_BUNDLE_PACKET = new Identifier(STPMod.MOD_ID, "play_bundle_packet");
 
     public static void init() {
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            ServerWorld world = handler.getPlayer().getServerWorld();
+            Collection<GhostServerPlayerEntity> ghosts = ((SServerPlayerEntity) handler.getPlayer()).stp$ghosts();
 
+            for (ServerPlayerEntity ghost : ghosts) {
+                world.removePlayer(ghost, Entity.RemovalReason.DISCARDED);
+            }
+
+            ghosts.clear();
+        });
     }
 
     public static boolean shouldProcessPacket(Packet<?> packet) {
@@ -80,5 +97,17 @@ public class InterWorldPacketHandler {
 
         buf.writeVarInt(packetId);
         packet.write(buf);
+    }
+
+    public static GhostServerPlayerEntity createPacketWatcher(ServerPlayerEntity player, ServerWorld targetWorld, BlockPos pos) {
+        GhostServerPlayerEntity ghost = new GhostServerPlayerEntity(player, targetWorld, pos);
+
+        targetWorld.getServer().getPlayerManager().sendToAll(PlayerListS2CPacket.entryFromPlayer(List.of(ghost)));
+        targetWorld.spawnEntity(ghost);
+
+        ghost.interactionManager.changeGameMode(GameMode.SPECTATOR);
+
+        ((SServerPlayerEntity) player).stp$ghosts().add(ghost);
+        return ghost;
     }
 }

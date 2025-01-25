@@ -39,12 +39,22 @@ public class MinecraftClientMixin implements SMinecraftClient {
 
     @Inject(method = "setWorld", at = @At("TAIL"))
     public void setWorld(ClientWorld world, CallbackInfo ci) {
-        this.stp$update();
+        this.stp$updateWorld();
     }
 
     @Override
     public void stp$update() {
         this.originalPlayer = this.player;
+    }
+
+    @Override
+    public void stp$updatePlayer() {
+        this.originalPlayer = this.player;
+        System.out.println("updated player: " + this.originalPlayer.getName().getString());
+    }
+
+    @Override
+    public void stp$updateWorld() {
         this.originalWorld = this.world;
     }
 }

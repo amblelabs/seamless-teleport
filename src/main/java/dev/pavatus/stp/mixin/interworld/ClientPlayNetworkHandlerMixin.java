@@ -19,11 +19,11 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("TAIL"))
     public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        ((SMinecraftClient) this.client).stp$update();
+        ((SMinecraftClient) this.client).stp$updatePlayer();
     }
 
     @Inject(method = "onPlayerRespawn", at = @At("TAIL"))
     public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-        ((SMinecraftClient) this.client).stp$update();
+        ((SMinecraftClient) this.client).stp$updatePlayer();
     }
 }

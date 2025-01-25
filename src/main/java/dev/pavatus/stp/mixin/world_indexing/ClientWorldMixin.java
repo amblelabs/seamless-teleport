@@ -37,7 +37,7 @@ public class ClientWorldMixin implements SClientWorld {
 
     @Override
     public ClientPlayNetworkHandler stp$networkHandler() {
-        return this.isMain() ? this.client.getNetworkHandler() : this.networkHandler;
+        return /*this.isMain() ? this.client.getNetworkHandler() :*/ this.networkHandler;
     }
 
     @Override
@@ -68,10 +68,10 @@ public class ClientWorldMixin implements SClientWorld {
         this.ghostPlayer = GhostClientPlayerEntity.create(
                 (ClientWorld) (Object) this, networkHandler, client.player);
 
-        if (this.isMain()) {
+        /*if (this.isMain()) {
             this.stp$setMain();
         } else {
             this.stp$unsetMain();
-        }
+        }*/
     }
 }

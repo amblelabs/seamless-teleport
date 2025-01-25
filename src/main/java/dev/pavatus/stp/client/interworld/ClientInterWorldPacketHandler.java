@@ -23,6 +23,10 @@ public class ClientInterWorldPacketHandler {
     public static void init() {
         ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.PLAY_PACKET, (client, handler, buf, responseSender) -> {
             Packet<ClientPlayNetworkHandler> packet = readPacket(buf);
+
+            if (!shouldHandlePacket(packet))
+                return;
+
             handlePacket(client, buf, packet::apply);
         });
 
@@ -31,7 +35,12 @@ public class ClientInterWorldPacketHandler {
             Packet<ClientPlayNetworkHandler>[] packets = new Packet[size];
 
             for (int i = 0; i < size; i++) {
-                packets[i] = readPacket(buf);
+                Packet<ClientPlayNetworkHandler> packet = readPacket(buf);
+
+                if (!shouldHandlePacket(packet))
+                    continue;
+
+                packets[i] = packet;
             }
 
             handlePacket(client, buf, networkHandler -> {
@@ -40,6 +49,10 @@ public class ClientInterWorldPacketHandler {
                 }
             });
         });
+    }
+
+    private static boolean shouldHandlePacket(Packet<?> packet) {
+        return true;
     }
 
     private static void handlePacket(MinecraftClient client, PacketByteBuf buf, Consumer<ClientPlayNetworkHandler> consumer) {
@@ -57,13 +70,13 @@ public class ClientInterWorldPacketHandler {
             ClientWorld realWorld = interClient.stp$world();
             ClientPlayerEntity realPlayer = interClient.stp$player();
 
-            client.world = (ClientWorld) sworld;
-            client.player = sworld.stp$player();
+            //client.world = (ClientWorld) sworld;
+            //client.player = sworld.stp$player();
 
             consumer.accept(networkHandler);
 
-            client.world = realWorld;
-            client.player = realPlayer;
+            //client.world = realWorld;
+            //client.player = realPlayer;
         }, sworld.stp$networkHandler(), client);
     }
 
