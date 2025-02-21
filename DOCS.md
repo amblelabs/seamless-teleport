@@ -1,22 +1,20 @@
-# How shit should work?
-## Server:
-When player walks into the proximity of a portal,
-a player's [ghost] gets created at the other side.
-
-The [ghost] delegates all method calls to the original player,
-except for the custom `ServerPlayNetworkHandler`.
-
-The [ghost] is locked to the portal's destination position.
-
-When player walks through the portal, the [ghost] 
-at the same side as the player gets removed.
 
 
-# Why shit doesn't work?
-No fucking idea.
+1. 
+
+WorldRenderer:
+1. this.setupTerrain(camera, frustum, bl, this.client.player.isSpectator()); // terain setup
+2. this.updateChunks(camera); // compile chunks
 
 
-# How shit should work (v2.0):
+
+
+
+
+
+
+
+
 ServerWorld -> ServerChunkManager -> ThreadedAnvilChunkStorage
 1. Inject in ServerWorld#sendToPlayerIfNearby
 2. Inject in PlayerManager#sendToAround

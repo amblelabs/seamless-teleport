@@ -1,7 +1,6 @@
 package dev.pavatus.stp.client;
 
-import dev.pavatus.stp.client.indexing.ClientWorldIndexer;
-import dev.pavatus.stp.client.interworld.ClientInterWorldPacketHandler;
+import dev.pavatus.stp.client.ghost.ClientGhostPacketHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,11 +11,10 @@ public class STPModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientWorldIndexer.init();
-        ClientInterWorldPacketHandler.init();
+        ClientGhostPacketHandler.init();
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register()
+
         });
     }
 }

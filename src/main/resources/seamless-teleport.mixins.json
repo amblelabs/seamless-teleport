@@ -4,22 +4,14 @@
   "package": "dev.pavatus.stp.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "event.ThreadedAnvilChunkStorageMixin",
-    "ghost.EntityPacketEntityAccessor",
-    "ghost.EntityPacketIdAccessor",
-    "ghost.ServerPlayerEntityMixin",
-    "ghost.ServerPlayNetworkHandlerAccessor",
-    "world_indexing.ServerWorldMixin"
+    "access.ConnectionAccess",
+    "access.ServerWorldInvoker",
+    "fix.PlayerManagerFixMixin",
+    "indexing.WorldIndexingMixin",
+    "indexing.WorldIndexServerMixin"
   ],
   "client": [
-    "event.client.ClientPlayerEntityMixin",
-    "event.client.MinecraftClientMixin",
-    "ghost.ClientChunkManagerMixin",
-    "interworld.ClientPlayNetworkHandlerAccessor",
-    "interworld.ClientPlayNetworkHandlerMixin",
-    "interworld.MinecraftClientMixin",
-    "world_indexing.ClientWorldMixin",
-    "world_indexing.MinecraftClientMixin"
+    "indexing.WorldIndexClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -15,14 +15,13 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class SwapWorldRendererCommand {
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("stp").then(literal("swap-world-renderer")
-                .then(argument("dimension", DimensionArgumentType.dimension())
-                        .then(argument("pos", BlockPosArgumentType.blockPos())
-                                .executes(SwapWorldRendererCommand::run)))));
+//        dispatcher.register(literal("stp").then(literal("swap-world-renderer")
+//                .then(argument("dimension", DimensionArgumentType.dimension())
+//                        .then(argument("pos", BlockPosArgumentType.blockPos())
+//                                .executes(SwapWorldRendererCommand::run)))));
     }
 
     private static int run(CommandContext<FabricClientCommandSource> ctx) {
-
         return Command.SINGLE_SUCCESS;
     }
 }
