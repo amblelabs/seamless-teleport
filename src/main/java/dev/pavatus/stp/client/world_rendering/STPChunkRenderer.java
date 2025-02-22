@@ -55,7 +55,7 @@ public class STPChunkRenderer {
 
         ClientWorld world = ClientWorldIndexer.getWorld(WORLD_INDEX);
 
-        if (world == null) return;
+        if (world == null || world == client.world) return;
 
         ClientWorld oldWorld = client.world;
 
