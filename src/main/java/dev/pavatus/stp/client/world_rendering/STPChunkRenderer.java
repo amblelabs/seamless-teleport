@@ -2,39 +2,20 @@ package dev.pavatus.stp.client.world_rendering;
 
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.systems.VertexSorter;
+import dev.pavatus.stp.client.ghost.GhostClientPlayerEntity;
 import dev.pavatus.stp.client.indexing.ClientWorldIndexer;
-import dev.pavatus.stp.client.indexing.SClientWorld;
-import dev.pavatus.stp.client.interworld.ClientInterWorldPacketHandler;
 import dev.pavatus.stp.mixin.client.ClientWorldRendererAccessor;
 import dev.pavatus.stp.mixin.client.WorldRendererAccessor;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.ChunkRenderInfo;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.chunk.ChunkBuilder;
-import net.minecraft.client.render.chunk.ChunkRendererRegion;
-import net.minecraft.client.render.chunk.ChunkRendererRegionBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.packet.s2c.play.ChunkData;
-import net.minecraft.network.packet.s2c.play.LightData;
-import net.minecraft.util.Util;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.chunk.light.LightingProvider;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static dev.pavatus.stp.client.STPModClient.WORLD_INDEX;
 
@@ -44,14 +25,9 @@ public class STPChunkRenderer {
     public STPChunkRenderer() {}
 
     public void renderChunkFromTarget(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
+        if (client.world == null ||  client.player == null) return;
         MinecraftClient.getInstance().getFramebuffer().endWrite();
         FB_HANDLER.setupFramebuffer();
-        MatrixStack stack = new MatrixStack();
-        Camera camera = client.gameRenderer.getCamera();
-        Vec3d targetPosition = new Vec3d(0, 64, 0);
-        Vec3d offset = targetPosition.subtract(camera.getPos());
-        if (client.world == null ||  client.player == null) return;
-
 
         ClientWorld world = ClientWorldIndexer.getWorld(WORLD_INDEX);
 
@@ -66,6 +42,20 @@ public class STPChunkRenderer {
 
         client.world = world;
 
+        MatrixStack stack = new MatrixStack();
+        Camera camera = new Camera();
+        AtomicReference<Vec3d> targetPosition = new AtomicReference<>(new Vec3d(0, 0, 0));
+        client.world.getEntities().forEach(entity -> {
+            if (entity instanceof GhostClientPlayerEntity ghost) {
+                targetPosition.set(ghost.getPos());
+                ghost.setPitch(client.player.getPitch());
+                ghost.setHeadYaw(client.player.getHeadYaw());
+                camera.update(world, ghost, false, false, tickDelta);
+            }
+        });
+
+        Vec3d offset = targetPosition.get().subtract(camera.getPos());
+
         rendererAccessor.getWorldRenderer().setWorld(world);
 
         stack.translate(offset.x, offset.y, offset.z);
@@ -75,7 +65,7 @@ public class STPChunkRenderer {
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         frustum.setFrustum(frustum1.getFrustum());
 
-        rendererAccessor.getWorldRenderer().render(stack, tickDelta, startTime, false, client.gameRenderer.getCamera(),
+        rendererAccessor.getWorldRenderer().render(stack, tickDelta, startTime, false, camera,
                 client.gameRenderer, client.gameRenderer.getLightmapTextureManager(),
                 matrix4f);
 
