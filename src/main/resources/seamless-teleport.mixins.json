@@ -13,6 +13,9 @@
   ],
   "client": [
     "client.ClientWorldRendererAccessor",
+    "client.GameRendererAccessor",
+    "client.GameRendererMixin",
+    "client.WorldRendererAccessor",
     "event.client.ClientPlayerEntityMixin",
     "event.client.MinecraftClientMixin",
     "ghost.ClientChunkManagerMixin",

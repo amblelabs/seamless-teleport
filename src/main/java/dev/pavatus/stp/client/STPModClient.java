@@ -29,8 +29,6 @@ public class STPModClient implements ClientModInitializer {
         /*ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             dispatcher.register();
         });*/
-        STPChunkRenderer chunkRenderer = new STPChunkRenderer();
-        WorldRenderEvents.END.register(chunkRenderer::renderChunkFromTarget);
         ClientInterWorldPacketEvent.EVENT.register(((worldIndex, packet) -> {
             WORLD_INDEX = worldIndex;
         }));

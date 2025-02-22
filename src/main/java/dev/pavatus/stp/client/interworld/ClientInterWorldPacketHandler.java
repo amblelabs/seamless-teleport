@@ -1,7 +1,9 @@
 package dev.pavatus.stp.client.interworld;
 
 import dev.pavatus.stp.client.world_rendering.MashedData;
+import dev.pavatus.stp.client.world_rendering.STPWorldRenderer;
 import dev.pavatus.stp.interworld.InterWorldPacketHandler;
+import dev.pavatus.stp.mixin.client.WorldRendererAccessor;
 import dev.pavatus.stp.mixin.interworld.ClientPlayNetworkHandlerAccessor;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -10,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
@@ -52,8 +55,13 @@ public class ClientInterWorldPacketHandler {
                 ClientWorld.Properties properties = new ClientWorld.Properties(worldProperties.getDifficulty(), worldProperties.isHardcore(), flatWorld);
 
                 // Rendering stuff
-                BufferBuilderStorage storage = new BufferBuilderStorage();
-                WorldRenderer worldRenderer = new WorldRenderer(client, client.getEntityRenderDispatcher(), client.getBlockEntityRenderDispatcher(), storage);
+                //BufferBuilderStorage storage = new BufferBuilderStorage();
+                STPWorldRenderer worldRenderer = new STPWorldRenderer(client, client.getEntityRenderDispatcher(), client.getBlockEntityRenderDispatcher(), client.getBufferBuilders());
+
+                WorldRendererAccessor myRendererAccessor = (WorldRendererAccessor) worldRenderer;
+                WorldRendererAccessor minecraftRendererAccessor = (WorldRendererAccessor) client.worldRenderer;
+
+                myRendererAccessor.setFrustum(minecraftRendererAccessor.getFrustum());
 
                 ClientWorld world = new ClientWorld(
                         client.getNetworkHandler(),

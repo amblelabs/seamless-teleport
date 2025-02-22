@@ -26,7 +26,8 @@ public class ServerPlayerEntityMixin implements SServerPlayerEntity {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
-        if ((Object) this instanceof GhostServerPlayerEntity)
+        ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+        if (!(player instanceof GhostServerPlayerEntity))
             this.ghosts = new ReferenceOpenHashSet<>();
     }
 
