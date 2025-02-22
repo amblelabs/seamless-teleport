@@ -1,2 +1,11 @@
 accessWidener v2 named
 accessible class net/minecraft/client/world/ClientChunkManager$ClientChunkMap
+accessible class net/minecraft/client/render/WorldRenderer$ChunkInfo
+accessible class net/minecraft/client/render/WorldRenderer$RenderableChunks
+
+accessible field net/minecraft/client/render/WorldRenderer builtChunks Ljava/util/concurrent/BlockingQueue;
+accessible field net/minecraft/client/render/WorldRenderer chunks Lnet/minecraft/client/render/BuiltChunkStorage;
+accessible field net/minecraft/client/render/WorldRenderer chunkBuilder Lnet/minecraft/client/render/chunk/ChunkBuilder;
+accessible field net/minecraft/client/render/WorldRenderer renderableChunks Ljava/util/concurrent/atomic/AtomicReference;
+accessible field net/minecraft/client/render/WorldRenderer chunkInfos Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
+accessible field net/minecraft/client/render/WorldRenderer$ChunkInfoList current [Lnet/minecraft/client/render/WorldRenderer$ChunkInfo;
