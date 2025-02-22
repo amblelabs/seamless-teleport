@@ -1,9 +1,15 @@
 package dev.pavatus.stp.client.interworld;
 
+import dev.pavatus.stp.client.world_rendering.MashedData;
 import dev.pavatus.stp.interworld.InterWorldPacketHandler;
 import dev.pavatus.stp.mixin.interworld.ClientPlayNetworkHandlerAccessor;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.render.BufferBuilderStorage;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
@@ -17,6 +23,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 public class ClientInterWorldPacketHandler {
+
+    public static Long2ObjectMap<MashedData> CHUNK_MASH_DATA = new Long2ObjectOpenHashMap<>();
 
     public static void init() {
         ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.LOAD_PACKET, (client, handler, buf, responseSender) -> {
@@ -38,24 +46,31 @@ public class ClientInterWorldPacketHandler {
             boolean debugWorld = buf.readBoolean();
             boolean flatWorld = buf.readBoolean();
 
-            ClientWorld.Properties worldProperties = client.world.getLevelProperties();
-            ClientWorld.Properties properties = new ClientWorld.Properties(worldProperties.getDifficulty(), worldProperties.isHardcore(), flatWorld);
+            MinecraftClient.getInstance().executeSync(() -> {
 
-            ClientWorld world = new ClientWorld(
-                    client.getNetworkHandler(),
-                    properties,
-                    key,
-                    registryEntry,
-                    chunkLoadDistance,
-                    simulationDistance,
-                    client::getProfiler,
-                    client.worldRenderer,
-                    debugWorld,
-                    seed
-            );
+                ClientWorld.Properties worldProperties = client.world.getLevelProperties();
+                ClientWorld.Properties properties = new ClientWorld.Properties(worldProperties.getDifficulty(), worldProperties.isHardcore(), flatWorld);
 
-            ((dev.pavatus.stp.client.indexing.SMinecraftClient) client).stp$worlds()
-                    .set(index, world);
+                // Rendering stuff
+                BufferBuilderStorage storage = new BufferBuilderStorage();
+                WorldRenderer worldRenderer = new WorldRenderer(client, client.getEntityRenderDispatcher(), client.getBlockEntityRenderDispatcher(), storage);
+
+                ClientWorld world = new ClientWorld(
+                        client.getNetworkHandler(),
+                        properties,
+                        key,
+                        registryEntry,
+                        chunkLoadDistance,
+                        simulationDistance,
+                        client::getProfiler,
+                        worldRenderer,
+                        debugWorld,
+                        seed
+                );
+
+                ((dev.pavatus.stp.client.indexing.SMinecraftClient) client).stp$worlds()
+                        .set(index, world);
+            });
         });
 
         ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.PLAY_PACKET, (client, handler, buf, responseSender) -> {

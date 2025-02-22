@@ -12,6 +12,7 @@
     "world_indexing.ServerWorldMixin"
   ],
   "client": [
+    "client.ClientWorldRendererAccessor",
     "event.client.ClientPlayerEntityMixin",
     "event.client.MinecraftClientMixin",
     "ghost.ClientChunkManagerMixin",
