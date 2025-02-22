@@ -1,13 +1,9 @@
 package dev.pavatus.stp.client.interworld;
 
-import dev.pavatus.stp.client.indexing.ClientWorldIndexer;
-import dev.pavatus.stp.client.indexing.SClientWorld;
 import dev.pavatus.stp.interworld.InterWorldPacketHandler;
 import dev.pavatus.stp.mixin.interworld.ClientPlayNetworkHandlerAccessor;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
@@ -19,12 +15,8 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.thread.ThreadExecutor;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public class ClientInterWorldPacketHandler {
-
 
     public static void init() {
         ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.LOAD_PACKET, (client, handler, buf, responseSender) -> {
@@ -72,7 +64,8 @@ public class ClientInterWorldPacketHandler {
             if (!shouldHandlePacket(packet))
                 return;
 
-            handlePacket(client, buf, packet::apply);
+            int worldIndex = readWorldIndex(buf);
+            ClientInterWorldPacketEvent.EVENT.invoker().onPacket(worldIndex, packet);
         });
 
         ClientPlayNetworking.registerGlobalReceiver(InterWorldPacketHandler.PLAY_BUNDLE_PACKET, (client, handler, buf, responseSender) -> {
@@ -88,11 +81,11 @@ public class ClientInterWorldPacketHandler {
                 packets[i] = packet;
             }
 
-            handlePacket(client, buf, networkHandler -> {
-                for (Packet<ClientPlayNetworkHandler> packet : packets) {
-                    packet.apply(networkHandler);
-                }
-            });
+            int worldIndex = readWorldIndex(buf);
+
+            for (Packet<?> packet : packets) {
+                ClientInterWorldPacketEvent.EVENT.invoker().onPacket(worldIndex, packet);
+            }
         });
     }
 
@@ -100,46 +93,11 @@ public class ClientInterWorldPacketHandler {
         return true;
     }
 
-    private static void handlePacket(MinecraftClient client, PacketByteBuf buf, Consumer<ClientPlayNetworkHandler> consumer) {
-        SClientWorld sworld = readWorld(buf);
-
-        if (sworld == null)
-            return;
-
-        ClientPlayNetworkHandler networkHandler = sworld.stp$networkHandler();
-
-        // in theory, this should abuse mc's singlethreaded composure
-        runOnThread(() -> {
-            SMinecraftClient interClient = (SMinecraftClient) client;
-
-            ClientWorld realWorld = interClient.stp$world();
-            ClientPlayerEntity realPlayer = interClient.stp$player();
-
-            client.world = (ClientWorld) sworld;
-            client.player = sworld.stp$player();
-
-            consumer.accept(networkHandler);
-
-            client.world = realWorld;
-            client.player = realPlayer;
-        }, sworld.stp$networkHandler(), client);
-    }
-
     private static Packet<ClientPlayNetworkHandler> readPacket(PacketByteBuf buf) {
         int packetId = buf.readVarInt();
 
         return (Packet<ClientPlayNetworkHandler>)
                 NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, packetId, buf);
-    }
-
-    @Nullable
-    private static SClientWorld readWorld(PacketByteBuf buf) {
-        int worldIndex = readWorldIndex(buf);
-
-        if (worldIndex == -1)
-            return null;
-
-        return (SClientWorld) ClientWorldIndexer.getWorld(worldIndex);
     }
 
     private static int readWorldIndex(PacketByteBuf buf) {
