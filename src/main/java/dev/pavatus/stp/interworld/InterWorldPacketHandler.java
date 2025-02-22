@@ -57,12 +57,12 @@ public class InterWorldPacketHandler {
             return;
         }
 
-        handlePacket(player, callbacks,
+        handlePacket(PLAY_PACKET, player, callbacks,
                 buf -> writePacket(packet, buf));
     }
 
     private static void sendBundlePacket(ServerPlayerEntity player, BundleS2CPacket bundle, PacketCallbacks callbacks) {
-        handlePacket(player, callbacks, buf -> {
+        handlePacket(PLAY_BUNDLE_PACKET, player, callbacks, buf -> {
             List<Packet<ClientPlayPacketListener>> packets = (List<Packet<ClientPlayPacketListener>>) bundle.getPackets();
 
             buf.writeVarInt(packets.size());
@@ -73,13 +73,13 @@ public class InterWorldPacketHandler {
         });
     }
 
-    private static void handlePacket(ServerPlayerEntity player, PacketCallbacks callbacks, Consumer<PacketByteBuf> consumer) {
+    private static void handlePacket(Identifier id, ServerPlayerEntity player, PacketCallbacks callbacks, Consumer<PacketByteBuf> consumer) {
         PacketByteBuf buf = PacketByteBufs.create();
 
         consumer.accept(buf);
         writeWorld(player.getServerWorld(), buf);
 
-        player.networkHandler.sendPacket(ServerPlayNetworking.createS2CPacket(PLAY_PACKET, buf), callbacks);
+        player.networkHandler.sendPacket(ServerPlayNetworking.createS2CPacket(id, buf), callbacks);
     }
 
     private static void writeWorld(ServerWorld world, PacketByteBuf buf) {
