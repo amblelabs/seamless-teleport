@@ -3,6 +3,7 @@ package dev.pavatus.stp.ghost;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -26,6 +27,13 @@ public class GhostServerPlayerEntity extends FakePlayer {
     private static GameProfile randomProfile() {
         UUID id = UUID.randomUUID();
         return new GameProfile(id, id.toString());
+    }
+
+    @Override
+    public void playerTick() {
+        super.playerTick();
+        ServerChunkManager chunkManager = this.getServerWorld().getChunkManager();
+        chunkManager.loadEntity(this);
     }
 
     public ServerPlayerEntity getOwner() {

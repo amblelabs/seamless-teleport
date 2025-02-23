@@ -45,8 +45,35 @@ public class GhostServerPlayNetworkHandler extends ServerPlayNetworkHandler {
         if (packet instanceof CustomPayloadS2CPacket)
             return true;
 
+        if (packet instanceof ChunkDataS2CPacket)
+            return false;
+
+        if (packet instanceof ChunkDeltaUpdateS2CPacket)
+            return false;
+
+        if (packet instanceof LightUpdateS2CPacket)
+            return false;
+
+        if (packet instanceof EntityStatusS2CPacket)
+            return true;
+
+        if (packet instanceof EntitiesDestroyS2CPacket)
+            return true;
+
+        if (packet instanceof EntitySpawnS2CPacket)
+            return true;
+
+        if (packet instanceof EntityAttributesS2CPacket)
+            return true;
+
+        if (packet instanceof EntityTrackerUpdateS2CPacket)
+            return true;
+
         if (packet instanceof ChunkRenderDistanceCenterS2CPacket)
             return false;
+
+        if (packet instanceof BlockEntityUpdateS2CPacket)
+            return true;
 
         if (packet instanceof BundleS2CPacket bundle) {
             for (Packet<?> bundled : bundle.getPackets()) {

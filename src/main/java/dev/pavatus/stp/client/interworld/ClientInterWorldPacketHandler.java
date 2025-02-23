@@ -55,8 +55,8 @@ public class ClientInterWorldPacketHandler {
                 ClientWorld.Properties properties = new ClientWorld.Properties(worldProperties.getDifficulty(), worldProperties.isHardcore(), flatWorld);
 
                 // Rendering stuff
-                //BufferBuilderStorage storage = new BufferBuilderStorage();
-                STPWorldRenderer worldRenderer = new STPWorldRenderer(client, client.getEntityRenderDispatcher(), client.getBlockEntityRenderDispatcher(), client.getBufferBuilders());
+                BufferBuilderStorage storage = new BufferBuilderStorage();
+                STPWorldRenderer worldRenderer = new STPWorldRenderer(client, client.getEntityRenderDispatcher(), client.getBlockEntityRenderDispatcher(), storage);
 
                 WorldRendererAccessor myRendererAccessor = (WorldRendererAccessor) worldRenderer;
                 WorldRendererAccessor minecraftRendererAccessor = (WorldRendererAccessor) client.worldRenderer;
@@ -123,7 +123,7 @@ public class ClientInterWorldPacketHandler {
                 NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, packetId, buf);
     }
 
-    private static int readWorldIndex(PacketByteBuf buf) {
+    public static int readWorldIndex(PacketByteBuf buf) {
         if (buf.readableBytes() < 4)
             return -1;
 

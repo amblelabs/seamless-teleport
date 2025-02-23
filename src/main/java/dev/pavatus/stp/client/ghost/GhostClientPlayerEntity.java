@@ -8,7 +8,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.stat.StatHandler;
 
 public class GhostClientPlayerEntity extends ClientPlayerEntity {
-
     public GhostClientPlayerEntity(ClientWorld world, ClientPlayNetworkHandler networkHandler, StatHandler stats, ClientRecipeBook recipeBook, boolean lastSneaking, boolean lastSprinting) {
         super(MinecraftClient.getInstance(), world, networkHandler, stats, recipeBook, lastSneaking, lastSprinting);
     }
