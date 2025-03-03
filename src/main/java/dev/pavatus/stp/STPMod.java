@@ -18,6 +18,7 @@ public class STPMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final Identifier INDEX_WORLDS = new Identifier(MOD_ID, "index_worlds");
+    public static final Identifier DEINDEX_WORLDS = new Identifier(MOD_ID, "deindex_worlds");
 
     public static void moveToWorld(ServerPlayerEntity player, ServerWorld destination) {
 

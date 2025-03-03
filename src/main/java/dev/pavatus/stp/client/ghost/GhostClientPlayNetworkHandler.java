@@ -1,7 +1,9 @@
 package dev.pavatus.stp.client.ghost;
 
 import com.mojang.authlib.GameProfile;
+import dev.pavatus.stp.client.STPModClient;
 import dev.pavatus.stp.client.indexing.ClientWorldIndexer;
+import dev.pavatus.stp.client.world_rendering.STPChunkRenderer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -84,6 +86,7 @@ public class GhostClientPlayNetworkHandler extends ClientPlayNetworkHandler {
     @Override
     public void onChunkDeltaUpdate(ChunkDeltaUpdateS2CPacket packet) {
         NetworkThreadUtils.forceMainThread(packet, this, this.client);
+        STPModClient.CHUNK_RENDERER.setChunkDeltaUpdateS2CPacket(packet);
         packet.visitUpdates((pos, state) -> this.world.handleBlockUpdate(pos, state, 19));
     }
 

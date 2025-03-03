@@ -44,6 +44,11 @@ public class MinecraftClientMixin implements SMinecraftClient {
         System.out.println("Received world: " + key + ": " + index);
     }
 
+    @Override
+    public void stp$removeWorldIndex() {
+        keyToWorldIndex.clear();
+    }
+
     @Inject(method = "joinWorld", at = @At("HEAD"))
     public void joinWorld(ClientWorld world, CallbackInfo ci) {
         if (!(world instanceof SClientWorld sworld))

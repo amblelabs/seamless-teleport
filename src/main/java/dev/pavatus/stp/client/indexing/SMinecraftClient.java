@@ -10,4 +10,6 @@ public interface SMinecraftClient {
     List<ClientWorld> stp$worlds();
     Integer stp$getWorldIndex(RegistryKey<World> key);
     void stp$setWorldIndex(RegistryKey<World> key, int index);
+
+    void stp$removeWorldIndex();
 }

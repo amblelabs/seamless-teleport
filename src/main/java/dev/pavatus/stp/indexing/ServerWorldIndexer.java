@@ -41,6 +41,8 @@ public class ServerWorldIndexer {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server)
                 -> syncToPlayer(server, handler.getPlayer()));
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server)
+                -> syncToPlayerDisconnect(server, handler.getPlayer()));
     }
 
     public static int getWorldIndex(ServerWorld world) {
@@ -60,5 +62,20 @@ public class ServerWorldIndexer {
         }
 
         ServerPlayNetworking.send(player, STPMod.INDEX_WORLDS, buf);
+    }
+
+    private static void syncToPlayerDisconnect(MinecraftServer server, ServerPlayerEntity player) {
+        PacketByteBuf buf = PacketByteBufs.create();
+        Collection<ServerWorld> worlds = (Collection<ServerWorld>) server.getWorlds();
+
+        buf.writeVarInt(worlds.size());
+
+        int i = 0;
+        for (ServerWorld world : worlds) {
+            buf.writeRegistryKey(world.getRegistryKey());
+            buf.writeVarInt(i++);
+        }
+
+        ServerPlayNetworking.send(player, STPMod.DEINDEX_WORLDS, buf);
     }
 }

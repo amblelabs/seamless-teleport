@@ -1,5 +1,6 @@
 package dev.pavatus.stp.mixin.client;
 
+import dev.pavatus.stp.client.STPModClient;
 import dev.pavatus.stp.client.world_rendering.STPChunkRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
     @Unique
-    STPChunkRenderer renderer = new STPChunkRenderer();
+    STPChunkRenderer renderer = STPModClient.CHUNK_RENDERER;
     @Inject(method = "renderWorld", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/" +
                     "client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/min" +

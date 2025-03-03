@@ -21,6 +21,11 @@ public class ClientWorldMixin implements SClientWorld {
     @Unique private GhostClientPlayNetworkHandler networkHandler;
 
     @Override
+    public GhostClientPlayerEntity stp$getGhostPlayer() {
+        return this.ghostPlayer;
+    }
+
+    @Override
     public void stp$setIndex(int index) {
         this.index = index;
     }

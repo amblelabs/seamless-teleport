@@ -22,6 +22,7 @@ public class GhostServerPlayerEntity extends FakePlayer {
 
         this.setServerWorld(world);
         this.setPos(pos.getX(), pos.getY(), pos.getZ());
+        this.setCameraEntity(this);
     }
 
     private static GameProfile randomProfile() {

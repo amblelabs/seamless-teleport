@@ -18,7 +18,7 @@ import net.minecraft.util.math.Vec3d;
 
 @Environment(EnvType.CLIENT)
 public class STPModClient implements ClientModInitializer {
-
+    public static final STPChunkRenderer CHUNK_RENDERER = STPChunkRenderer.getInstance();
     public static int WORLD_INDEX = 0;
 
     @Override

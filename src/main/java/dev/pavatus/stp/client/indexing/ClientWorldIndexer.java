@@ -23,6 +23,11 @@ public class ClientWorldIndexer {
             }
         });
 
+        ClientPlayNetworking.registerGlobalReceiver(STPMod.DEINDEX_WORLDS, (client, handler, buf, responseSender) -> {
+            int amount = buf.readVarInt();
+            ((SMinecraftClient) client).stp$removeWorldIndex();
+        });
+
         ClientPlayerInitEvent.EVENT.register((client, player) -> {
             for (ClientWorld world : ((SMinecraftClient) client).stp$worlds()) {
                 if (world == null)
